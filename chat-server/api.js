@@ -19,15 +19,11 @@ const http = require('http').createServer(app),
 io.on('connection', (socket) => {
 
 	socket.on('message', async (message) => {
-
 		switch (message.type) {
 			case 'init':
 				let { user_id } = message
 
-				console.log("CONNECTED", user_id)
-
 				Users.findOne({user_id: user_id}, async (err, user) => {
-
 					if (!user) {
 						user_id = await Users.count() + 1
 
@@ -72,9 +68,7 @@ io.on('connection', (socket) => {
 			})
 
 			io.sockets.emit('dialog-update', {...messageOptions, user_id})
-			// socket.emit('dialog-update', {...messageOptions, user_id})
 		}
-		// console.log("new message", event)
 	})
 })
 
