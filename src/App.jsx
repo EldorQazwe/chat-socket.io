@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import './App.css'
 import io from "socket.io-client";
@@ -7,7 +7,6 @@ import DialogCreator from './Dialogs'
 const socket = io({transports: ["websocket"]});
 const App = () => {
    const ref = useRef(null);
-
    // socket.io status connections
    const [isConnected, setIsConnected] = useState(socket.connected);
 
@@ -66,6 +65,8 @@ const App = () => {
       scroll()
    }, [messages]);
 
+
+   console.log(33)
    // ternary operator (true ? 'истина': 'ложь')
    // check socket connection status
    return (
@@ -87,7 +88,7 @@ const App = () => {
                         onChange={(event) => {setValue(event.target.value)}}
                         required
                      />
-                     <button type='submit'>SEND</button>
+                     <button>SEND</button>
                   </form>
                </div>
             </>

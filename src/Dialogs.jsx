@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
+import React from "react";
 
-const DialogCreator = (props) => {
+const DialogCreatorMemo = (props) => {
 	const { dialog, user } = props
 
 	return (
@@ -18,6 +19,8 @@ const DialogCreator = (props) => {
 		})
 	)
 }
+
+const DialogCreator = React.memo(DialogCreatorMemo);
 
 DialogCreator.propTypes = {
 	dialog: PropTypes.array.isRequired,
