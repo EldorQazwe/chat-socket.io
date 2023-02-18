@@ -1,12 +1,13 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import './App.css'
 import io from "socket.io-client";
 import DialogCreator from './Dialogs'
 
 const socket = io({transports: ["websocket"]});
-
 const App = () => {
+   const ref = useRef(null);
+
    // socket.io status connections
    const [isConnected, setIsConnected] = useState(socket.connected);
 
@@ -27,8 +28,14 @@ const App = () => {
       socket.emit('dialog-new-message',{message: value, user_id: user})
    }
 
+   const test = useCallback(() => {
+      ref.current.scrollTo(0, ref.current.scrollHeight )
+
+   }, [ref])
+
    // event on opening, and handler for socket.on
    useEffect(() => {
+
       socket.on('message', async (event) => {
          switch (event.type) {
             case 'init':
@@ -39,12 +46,15 @@ const App = () => {
                setIsConnected(true);
                setUser(event.user_id)
                localStorage.setItem("username", event.user_id)
+
                break
          }
       })
 
       socket.on('dialog-update', (event) => {
          setMessages(prev => ([...prev, event]))
+
+         test()
       })
 
       // on first connection
@@ -57,32 +67,34 @@ const App = () => {
          setIsConnected(false);
       });
 
-   }, []);
-
+   }, [ref]);
    // ternary operator (true ? 'истина': 'ложь')
    // check socket connection status
-   return !isConnected
-      ? (<><h2>Подключение к сокетам</h2></>)
-      : (
-         <>
-            <div className="header"> <h2 >Chat Messages</h2></div>
+   return (
+      <>
+         {isConnected
+            ? <>
+               <div className="header"> <h2 >Chat Messages</h2></div>
 
-            <div className="body">
-               {messages?.length === 0 && <p>Будь первым кто напишет</p>}
-               <DialogCreator dialog={messages} user={user}/>
-            </div>
+               <div className="body" ref={ref}>
+                  {messages?.length === 0 && <p>Будь первым кто напишет</p>}
+                  <DialogCreator dialog={messages} user={user}/>
+               </div>
 
-            <div className="footer">
-               <form onSubmit={send_message} className='wrapper'>
-                  <input
-                     placeholder='Введите сообщение'
-                     value={value}
-                     onChange={(event) => {setValue(event.target.value)}}
-                     required
-                  />
-                  <button type='submit'>SEND</button>
-               </form>
-            </div>
+               <div className="footer">
+                  <form onSubmit={send_message} className='wrapper'>
+                     <input
+                        placeholder='Введите сообщение'
+                        value={value}
+                        onChange={(event) => {setValue(event.target.value)}}
+                        required
+                     />
+                     <button type='submit'>SEND</button>
+                  </form>
+               </div>
+            </>
+            : <h2>Подключение к сокетам</h2>
+         }
       </>
    )
 }
