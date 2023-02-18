@@ -27,6 +27,7 @@ const App = () => {
       socket.emit('dialog-new-message',{message: value, user_id: user})
    }
 
+   // TODO: add scroll to down
    const scroll = useCallback(() => {
       ref?.current?.scrollTo(0, ref.current.scrollHeight )
    }, [])
@@ -62,8 +63,7 @@ const App = () => {
          setIsConnected(false);
       });
 
-      scroll()
-   }, [messages]);
+   }, []);
 
    // ternary operator (true ? 'истина': 'ложь')
    // check socket connection status
@@ -98,3 +98,4 @@ const App = () => {
 }
 
 export default App
+
