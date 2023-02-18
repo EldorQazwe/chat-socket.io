@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import './App.css'
 import io from "socket.io-client";
@@ -65,8 +65,6 @@ const App = () => {
       scroll()
    }, [messages]);
 
-
-   console.log(33)
    // ternary operator (true ? 'истина': 'ложь')
    // check socket connection status
    return (
