@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import './App.css'
 import io from "socket.io-client";
@@ -26,11 +26,6 @@ const App = () => {
       setValue("")
       socket.emit('dialog-new-message',{message: value, user_id: user})
    }
-
-   // TODO: add scroll to down
-   const scroll = useCallback(() => {
-      ref?.current?.scrollTo(0, ref.current.scrollHeight )
-   }, [])
 
    // event on opening, and handler for socket.on
    useEffect(() => {
@@ -63,6 +58,8 @@ const App = () => {
          setIsConnected(false);
       });
 
+      // TODO: add scroll
+      ref?.current?.scrollTo(0, ref.current.scrollHeight)
    }, []);
 
    // ternary operator (true ? 'истина': 'ложь')
