@@ -28,14 +28,12 @@ const App = () => {
       socket.emit('dialog-new-message',{message: value, user_id: user})
    }
 
-   const test = useCallback(() => {
+   const scroll = useCallback(() => {
       ref?.current?.scrollTo(0, ref.current.scrollHeight )
    }, [])
 
-
    // event on opening, and handler for socket.on
    useEffect(() => {
-      console.log(333)
       socket.on('message', async (event) => {
          switch (event.type) {
             case 'init':
@@ -53,7 +51,6 @@ const App = () => {
 
       socket.on('dialog-update', (event) => {
          setMessages(prev => ([...prev, event]))
-
       })
 
       // on first connection
@@ -65,7 +62,8 @@ const App = () => {
       socket.on('disconnect', () => {
          setIsConnected(false);
       });
-      test()
+
+      scroll()
    }, [messages]);
 
    // ternary operator (true ? 'истина': 'ложь')
