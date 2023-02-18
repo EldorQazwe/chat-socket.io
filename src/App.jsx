@@ -83,6 +83,7 @@ const App = () => {
                      <input
                         placeholder='Введите сообщение'
                         value={value}
+                        maxLength={200}
                         onChange={(event) => {setValue(event.target.value)}}
                         required
                      />
