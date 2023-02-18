@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import './App.css'
 import io from "socket.io-client";
@@ -29,13 +29,13 @@ const App = () => {
    }
 
    const test = useCallback(() => {
-      ref.current.scrollTo(0, ref.current.scrollHeight )
+      ref?.current?.scrollTo(0, ref.current.scrollHeight )
+   }, [])
 
-   }, [ref])
 
    // event on opening, and handler for socket.on
    useEffect(() => {
-
+      console.log(333)
       socket.on('message', async (event) => {
          switch (event.type) {
             case 'init':
@@ -54,7 +54,6 @@ const App = () => {
       socket.on('dialog-update', (event) => {
          setMessages(prev => ([...prev, event]))
 
-         test()
       })
 
       // on first connection
@@ -66,8 +65,9 @@ const App = () => {
       socket.on('disconnect', () => {
          setIsConnected(false);
       });
+      test()
+   }, [messages]);
 
-   }, [ref]);
    // ternary operator (true ? 'истина': 'ложь')
    // check socket connection status
    return (
