@@ -1,11 +1,12 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import './App.css'
-import io from "socket.io-client";
+
 import DialogCreator from './Dialogs'
 
-const socket = io({transports: ["websocket"]});
-const App = () => {
+const App = (props) => {
+   const { socket } = props
+
    const ref = useRef(null);
    // socket.io status connections
    const [isConnected, setIsConnected] = useState(socket.connected);
@@ -23,12 +24,13 @@ const App = () => {
    const send_message = (event) => {
       event.preventDefault();
 
-      setValue("")
       socket.emit('dialog-new-message',{message: value, user_id: user})
+      setValue("")
    }
 
    // event on opening, and handler for socket.on
    useEffect(() => {
+
       socket.on('message', async (event) => {
          switch (event.type) {
             case 'init':
@@ -58,9 +60,14 @@ const App = () => {
          setIsConnected(false);
       });
 
-      // TODO: add scroll
       ref?.current?.scrollTo(0, ref.current.scrollHeight)
-   }, []);
+
+      return () => {
+         socket.off('connect');
+         socket.off('disconnect');
+         socket.off('dialog-update');
+      };
+   }, [messages]);
 
    // ternary operator (true ? 'истина': 'ложь')
    // check socket connection status
@@ -68,9 +75,9 @@ const App = () => {
       <>
          {isConnected
             ? <>
-               <div className="header"> <h2 >Chat Messages</h2></div>
+               <div className="header"><h2 >Chat Messages</h2></div>
 
-               <div className="body" ref={ref}>
+               <div className="body" ref={ref} style={{scrollBehavior: 'smooth'}}>
                   {messages?.length === 0 && <p>Будь первым кто напишет</p>}
                   <DialogCreator dialog={messages} user={user}/>
                </div>

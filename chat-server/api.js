@@ -48,6 +48,8 @@ io.on('connection', (socket) => {
 
 					socket.local.emit('message', {type: 'new_user', msg: "Successfully connected"})
 				})
+				break
+
 		}
 	})
 
@@ -69,6 +71,9 @@ io.on('connection', (socket) => {
 
 			io.sockets.emit('dialog-update', {...messageOptions, user_id})
 		}
+	})
+
+	socket.on('disconnect', () => {
 	})
 })
 
